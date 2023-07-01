@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -27,27 +28,33 @@ func main() {
 	}
 
 	if len(os.Args) >= 2 {
-		whoPing := os.Args[1]
-		if whoPing == "" && strings.Count(whoPing, ".") != 2 {
-			log.Println("network to ping needed, example 192.168.1")
+		if os.Args[1] == "-h" || os.Args[1] == "--help" {
+			fmt.Println(Help_string)
+			return
 		}
 
-		for ip := 1; ip < 255; ip++ {
-			pinger, err := probing.NewPinger(whoPing + "." + strconv.Itoa(ip))
-			if err != nil {
-				log.Println("ERRORE CREATORE PING")
-			}
-			pinger.Count = count
-			pinger.Timeout = time.Duration(timer) * time.Second
-			pinger.SetPrivileged(true)
-			pinger.Run()
-			/* Non ci interessano eventuali errori */
-			//		if err != nil {
-			//			log.Println("ERRORE ESECUZIONE PING 192.168.1." + strconv.Itoa(ip) + err.Error())
-			//		}
-			stats := pinger.Statistics()
-			if stats.PacketsRecv > 0 {
-				log.Println("192.168.1." + strconv.Itoa(ip))
+		whoPing := os.Args[1]
+		if whoPing == "" || strings.Count(whoPing, ".") != 2 {
+			log.Println("network to ping needed, example 192.168.1")
+		} else {
+			log.Println(strings.Count(whoPing, "."))
+			for ip := 1; ip < 255; ip++ {
+				pinger, err := probing.NewPinger(whoPing + "." + strconv.Itoa(ip))
+				if err != nil {
+					log.Println("ERRORE CREATORE PING")
+				}
+				pinger.Count = count
+				pinger.Timeout = time.Duration(timer) * time.Second
+				pinger.SetPrivileged(true)
+				pinger.Run()
+				/* Non ci interessano eventuali errori */
+				//		if err != nil {
+				//			log.Println("ERRORE ESECUZIONE PING 192.168.1." + strconv.Itoa(ip) + err.Error())
+				//		}
+				stats := pinger.Statistics()
+				if stats.PacketsRecv > 0 {
+					log.Println("192.168.1." + strconv.Itoa(ip))
+				}
 			}
 		}
 	} else {
