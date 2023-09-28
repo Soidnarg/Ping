@@ -13,7 +13,7 @@ import (
 
 func main() {
 	count := 2
-	timer := 2
+	timer := 2000
 
 	if len(os.Args) >= 4 {
 		if whoPing, err := strconv.Atoi(os.Args[3]); err == nil && whoPing != 0 {
@@ -44,7 +44,7 @@ func main() {
 					log.Println("ERRORE CREATORE PING")
 				}
 				pinger.Count = count
-				pinger.Timeout = time.Duration(timer) * time.Second
+				pinger.Timeout = time.Duration(timer) * time.Millisecond
 				pinger.SetPrivileged(true)
 				pinger.Run()
 				/* Non ci interessano eventuali errori */
